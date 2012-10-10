@@ -1,0 +1,120 @@
+\documentclass{llncs}
+\begin{document}
+\title{Demodularization: Recovering Whole Programs to Enable Optimizations} 
+\author{Blake Johnson \and Jay McCarthy}
+\institute{Brigham Young University}
+\maketitle
+\begin{abstract}
+Programmers want to write modular programs to increase maintainability, create abstractions, and manage complexity.
+Modularity hampers optimizations, especially when modules are compiled separately or written in different languages.
+Languages with syntactic extension capabilities, like Racket, allow every module to effectively be written in different languages.
+We developed an algorithm that combines all executable code from a modular Racket program into a single module which can be optimized as a whole program.
+The demodularized programs have the same behavior as their modular counterparts but are smaller and faster.
+We show that programs maintain their meaning through an operational semantics of the demodularization process and verify that performance increases by running the algorithm on existing Racket programs.
+\end{abstract}
+
+\section{Introduction}
+
+Programmers should not have to sacrifice the software engineering goals of modular design and good abstractions for performance. 
+Instead, their tools should make running a well-designed program as efficient as possible. 
+Many languages provide features for creating modular programs, which enable separate compilation and module reuse.
+Some languages provide expressive macro systems, which enable programmers to extend the compiler in arbitrary ways.
+Combining module systems with expressive macro systems allows programmers to write modular programs where each module can be written in its own domain-specific language.
+A compiler for such a language must ensure that modular programs have the same meaning no matter the order in which the modules were compiled.
+A phased module system, like the one described by Flatt () for Racket, is a way to allow both modules and expressive macros in a language.
+
+Modular programs are difficult to optimize because the compiler has little to no information about values that come from other modules when compiling a single module.
+Existing optimizations have even less information when modules can extend the compiler. 
+Good abstractions are meant to obscure internal implementations so that it is easier for programmers to reason about their programs, but this obscurity also affects information available for optimizations.  
+In contrast, non-modular programs are simpler to optimize because the compiler has information about every value in the program.
+
+Some languages avoid the problem of optimizing modular programs by not allowing modules, while others do optimizations at link time, and others use inlining. 
+Not allowing modules defeats the benefits of modular design. 
+Link time optimizations can be too low level to do useful optimizations. 
+Inlining must be heuristic-based, and good heuristics are hard to develop. 
+
+Our solution for optimizing modular programs, called demodularization, is to transform a modular program into a non-modular program by combining all runtime code and data in the program into a single module.
+In a phased module system, finding all of the runtime values is not trivial.
+Phased module systems allow programmers to refer to the same module while writing compiler extensions and while writing normal programs.
+A demodularized program does not need to include modules that are only needed during compile-time, but whether or not the module is needed only at compile-time isn't obvious from just examining the module in isolation. 
+
+When a program is collapsed into a single module, it is effectively a non-modular program. It then contains all the information necesarry for worthwhile optimizations. Demodularization also enables new optimizations that need whole program information, or perform much better with whole program information. 
+
+We provide an operational semantics for a simple language with a phased module system, and show that the demodularization process preserves program meaning. We also provide an implementation of demodularization for the Racket programming language, and verify experimentally that programs perform better after demodularization.
+
+We use the operational semantics model of the demodularization process to explain why demodularization is correct, then describe an actual implementation for Racket, followed by experimental results of demodularizing and optimizing real-world Racket programs. The operational semantics model removes the unnecessary details of the full implementation so the demodularization process is easier to understand and verify. The actual implementation presents interesting diffuculties that didn't need to be handled in the model. The experimental results show that demodularization improves performance, especially when a program is highly modular. 
+
+\section{Demodularization}
+  \subsection{Racket Module System}
+
+  Explain internal vs external linking
+  Explain phasing
+  \subsection{Redex Model}
+    \subsubsection{Model with identifiers}
+
+    Explain demodularization process
+    
+    \subsubsection{Model with stack locations}
+
+    Show translation to model that is closer to bytecode
+    
+    \subsubsection{Proof of soundness}
+\section{Implementation}
+   \subsection{Racket Bytecode Format}
+
+   Explain how it is similar/different to the model
+   
+   \subsection{Hooking into the Racket optimizer}
+
+   Explain decompilation process to hook into optimizer
+
+\section{Performance Testing}
+  
+   \begin{enumerate}
+
+   \item What is to be measured?
+   
+   Performance of modular programs and demodularized programs.
+  
+   \item How is it to be evaluated?
+   
+   Speed, program size, and memory usage. Also a measure of program modularity vs these things. Modularity means how many cross module references a program has.
+
+   \item Should the experimental results correspond to predictions made by a model?
+ 
+   The model doesn't include optimizations, so no.
+
+   \item Have appropriate baselines been identified?
+
+   The baseline is the modular program before demodularization.
+
+   \item What are the variables?
+
+   Modularity, cpu caches, runtime startup.
+
+   \item Are statistical methods necessary for validation?
+
+   No, because any change in performance is significant, and we are not trying to show correlation.
+
+   \end{enumerate}
+
+
+   \subsection{Testing Methodology}
+
+   Talk to stats people to make a good test
+   
+   \subsection{Results}
+
+   Explain results and why they matter
+\section{Related Work}
+   \subsection{External Link-time Optimization}
+
+   Explain efforts to do link time optimization in languages like C 
+   
+   \subsection{Cross-module Inlining}
+
+   Explain difficulty of finding good heuristics
+
+\section{Conclusion}
+
+\end{document}
