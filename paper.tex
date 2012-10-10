@@ -44,29 +44,22 @@ We provide an operational semantics for a simple language with a phased module s
 
 We use the operational semantics model of the demodularization process to explain why demodularization is correct, then describe an actual implementation for Racket, followed by experimental results of demodularizing and optimizing real-world Racket programs. The operational semantics model removes the unnecessary details of the full implementation so the demodularization process is easier to understand and verify. The actual implementation presents interesting diffuculties that didn't need to be handled in the model. The experimental results show that demodularization improves performance, especially when a program is highly modular. 
 
-\section{Demodularization}
-  \subsection{Racket Module System}
+\section{Intuition}
 
-  Explain internal vs external linking
-  Explain phasing
-  \subsection{Redex Model}
-    \subsubsection{Model with identifiers}
+\section{Model}
 
-    Explain demodularization process
-    
-    \subsubsection{Model with stack locations}
-
-    Show translation to model that is closer to bytecode
-    
-    \subsubsection{Proof of soundness}
 \section{Implementation}
-   \subsection{Racket Bytecode Format}
 
-   Explain how it is similar/different to the model
+\section{Evaluation}
+
+\section{Related Work}
+   \subsection{External Link-time Optimization}
+
+   Explain efforts to do link time optimization in languages like C 
    
-   \subsection{Hooking into the Racket optimizer}
+   \subsection{Cross-module Inlining}
 
-   Explain decompilation process to hook into optimizer
+   Explain difficulty of finding good heuristics
 
 \section{Performance Testing}
   
@@ -106,14 +99,6 @@ We use the operational semantics model of the demodularization process to explai
    \subsection{Results}
 
    Explain results and why they matter
-\section{Related Work}
-   \subsection{External Link-time Optimization}
-
-   Explain efforts to do link time optimization in languages like C 
-   
-   \subsection{Cross-module Inlining}
-
-   Explain difficulty of finding good heuristics
 
 \section{Conclusion}
 
