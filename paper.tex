@@ -47,11 +47,38 @@ We use the operational semantics model of the demodularization process to explai
 
 \section{Intuition}
 
+Compilation and Evaluation of modular Racket program, such as the one in Figure 1, illustrates how a phased module system works. 
+First, the compiler expands all of the macros in the main module. 
+This expansion may trigger compilation of other modules that the main module uses inside its macros.
+After expansion, modules contain executable code separated into phases.
+Phase 0 code is code that will be executed by running the program.
+All other phases contain code that is available for use by other modules, but doesn't impact the execution of the module.
+Evaluation of a module proceeds by executing all phase 0 code in a module and in the modules it imports.
+Every time the evaluation hits a require expression, execution of the current module stops, and the required module is evaluated.
+Again, only phase 0 code of the required module is executed.
+A phased module system allows an import to be required at a different phase than phase 0.
+When a module is required at phase 1, 
+
+Formulate a good example with ~3 modules that have interesting phasing.
+
 \section{Model}
 
 \section{Implementation}
 
+The demodularization algorithm for the Racket module system operates on Racket bytecode. 
+Racket's bytecode format is one step removed from the fully-expanded kernel language: instead of identifiers for bindings, it uses locations.
+For toplevel bindings, these locations point to memory allocated for each module known as the module's prefix.
+So, in Figure XXX, foo would be in prefix location 0 and bar would be in prefix location 1, and all the references to foo and bar are replaced with references to 0 and 1.
+Like in the model, the algorithm combines all phase 0 code into a single module, but since the references are locations instead of identifiers, the locations of different modules overlap.
+We solve this by extending the prefix of the main module to have locations for the required module's toplevel identifiers, and then adjusting the toplevel references in the required module to those new locations. 
+
+After combining all the code for a program into a single module, we want to optimize it.
+The existing optimizations for Racket operate on an intermediate form that is part way between fully-expanded code and bytecode. 
+Therefore, to hook into the existing optimizations, we decompile the bytecode of the demodularized program into the intermediate form and then run it through the optimizer to produce bytecode once more.
+
 \section{Evaluation}
+
+
 
 \section{Related Work}
    \subsection{External Link-time Optimization}
