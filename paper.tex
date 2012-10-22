@@ -8,6 +8,7 @@
 Programmers want to write modular programs to increase maintainability and create abstractions, but modularity hampers optimizations, especially when modules are compiled separately or written in different languages. 
 In languages with syntactic extension capabilities, each module in a program can be written in a separate language, and the module system must ensure that the modules interoperate correctly. 
 In Racket, the module system ensures this by separating module code into phases for runtime and compile-time and allowing phased imports and exports inside modules. 
+For example, many Racket modules import the list module for compile-time so that macros can use lists, even though the list module is runtime code.
 We present an algorithm, called demodularization, that combines all executable code from a phased modular program into a single module that can then be optimized as a whole program. 
 The demodularized programs have the same behavior as their modular counterparts but are easier to optimize. 
 We show that programs maintain their meaning through an operational semantics of the demodularization process and verify that performance increases by running the algorithm and existing optimizations on Racket programs.
@@ -21,11 +22,11 @@ Many languages provide features for creating modular programs, which enable sepa
 Some languages provide expressive macro systems, which enable programmers to extend the compiler in arbitrary ways.
 Combining module systems with expressive macro systems allows programmers to write modular programs where each module can be written in its own domain-specific language.
 A compiler for such a language must ensure that modular programs have the same meaning no matter the order in which the modules were compiled.
-A phased module system, like the one described by Flatt () for Racket, is a way to allow both modules and expressive macros in a language.
+A phased module system, like the one described by Flatt () for Racket, is a way to allow both separately compiled modules and expressive macros in a language.
 
 Modular programs are difficult to optimize because the compiler has little to no information about values that come from other modules when compiling a single module.
 Existing optimizations have even less information when modules can extend the compiler. 
-Good abstractions are meant to obscure internal implementations so that it is easier for programmers to reason about their programs, but this obscurity also affects information available for optimizations.  
+Good abstractions are meant to obscure internal implementations so that it is easier for programmers to reason about their programs, but this obscurity also limits information available for optimizations.  
 In contrast, non-modular programs are simpler to optimize because the compiler has information about every value in the program.
 
 Some languages avoid the problem of optimizing modular programs by not allowing modules, while others do optimizations at link time, and others use inlining. 
